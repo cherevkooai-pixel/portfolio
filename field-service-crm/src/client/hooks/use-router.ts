@@ -1,0 +1,58 @@
+import { useState, useEffect, useCallback } from "preact/hooks";
+import type { View } from "../types";
+
+export interface RouteState {
+  view: View;
+  id: string | null;
+  sub: string | null;
+}
+
+const VIEW_ROUTES: Record<string, View> = {
+  "": "today",
+  "today": "today",
+  "leads": "leads",
+  "inbox": "inbox",
+  "numbers": "numbers",
+  "more": "more",
+  "quotes": "quotes",
+  "campaigns": "campaigns",
+  "warm": "warm",
+  "pricebook": "pricebook",
+  "templates": "templates",
+  "settings": "settings",
+  "dashboard": "dashboard",
+  "schedule": "schedule",
+  "jobs": "jobs",
+  "customers": "customers",
+  "assets": "assets",
+  "technicians": "technicians",
+  "services": "services",
+  "invoices": "invoices",
+  "materials": "materials",
+};
+
+function parseRoute(path: string): RouteState {
+  const clean = path.replace(/^\/+|\/+$/g, "");
+  const segments = clean.split("/");
+  const viewKey = segments[0] || "";
+  const view = VIEW_ROUTES[viewKey] || "today";
+  const id = segments[1] || null;
+  return { view, id, sub: segments[2] || null };
+}
+
+export function useRouter() {
+  const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
+
+  const navigate = useCallback((to: string) => {
+    window.history.pushState(null, "", to);
+    setRoute(parseRoute(to));
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setRoute(parseRoute(window.location.pathname));
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, []);
+
+  return { ...route, navigate };
+}

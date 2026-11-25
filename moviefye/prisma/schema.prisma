@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String     @id @default(cuid())
+  name           String
+  username       String?    @unique
+  passwordHash   String?
+  createdAt      DateTime   @default(now())
+  xp             Int        @default(0)
+  currentStreak  Int        @default(0)
+  longestStreak  Int        @default(0)
+  lastLoggedDate DateTime?
+  watchLogs      WatchLog[]
+  sessions       Session[]
+  posts          Post[]
+
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model FriendRequest {
+  id         String   @id @default(cuid())
+  fromUser   User     @relation("SentFriendRequests", fields: [fromUserId], references: [id])
+  fromUserId String
+  toUser     User     @relation("ReceivedFriendRequests", fields: [toUserId], references: [id])
+  toUserId   String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  @@unique([fromUserId, toUserId])
+}
+
+model WatchLog {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  tmdbId      Int
+  mediaType   String
+  title       String
+  posterPath  String?
+  watchedAt   DateTime
+  /// 10-point scale in 0.5 steps (0.5 – 10.0). Null means "no rating given".
+  rating      Float?
+  notes       String?
+  createdAt   DateTime @default(now())
+  post        Post?
+
+  @@index([userId])
+}
+
+model Film {
+  id         String   @id @default(cuid())
+  tmdbId     Int
+  mediaType  String
+  title      String
+  posterPath String?
+  overview   String?
+  createdAt  DateTime @default(now())
+
+  @@unique([tmdbId, mediaType])
+}
+
+model Post {
+  id         String    @id @default(cuid())
+  author     User      @relation(fields: [authorId], references: [id])
+  authorId   String
+  type       String
+  body       String?
+  watchLog   WatchLog? @relation(fields: [watchLogId], references: [id])
+  watchLogId String?   @unique
+  visibility String    @default("friends")
+  createdAt  DateTime  @default(now())
+
+  @@index([authorId])
+  @@index([createdAt])
+}

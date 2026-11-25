@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0b0f;
+  --surface: #16161d;
+  --surface-raised: #1d1d26;
+  --foreground: #f2f2f5;
+  --muted: #9a9aa6;
+  --border: #26262f;
+  --accent: #e11d48;
+  --accent-foreground: #ffffff;
+  --gamify: #fbbf24;
+  --gamify-foreground: #1c1917;
+  --success: #22c55e;
+  --warning: #f97316;
+  --flame: #f97316;
+
+  /* Brand palette — from the Movifye logo dot cluster */
+  --brand-purple: #8b7fe8;
+  --brand-teal: #2bb8b0;
+  --brand-coral: #f5606e;
+  --brand-orange: #f5a623;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-gamify: var(--gamify);
+  --color-gamify-foreground: var(--gamify-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-flame: var(--flame);
+  --color-gold: var(--gamify);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-coral: var(--brand-coral);
+  --color-brand-orange: var(--brand-orange);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-baloo);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fafaf9;
+    --surface: #ffffff;
+    --surface-raised: #f5f5f4;
+    --foreground: #1c1917;
+    --muted: #78716c;
+    --border: #e7e5e4;
+    --accent: #be123c;
+    --accent-foreground: #ffffff;
+    --gamify: #b45309;
+    --gamify-foreground: #ffffff;
+    --success: #16a34a;
+    --warning: #ea580c;
+    --flame: #ea580c;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-pop-in {
+  animation: pop-in 0.18s ease-out;
+}
+
+@keyframes celebrate-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-celebrate {
+  animation: celebrate-burst 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes count-up-glow {
+  0% {
+    text-shadow: 0 0 0 transparent;
+  }
+  40% {
+    text-shadow: 0 0 24px color-mix(in srgb, var(--gamify) 70%, transparent);
+  }
+  100% {
+    text-shadow: 0 0 0 transparent;
+  }
+}
+
+.animate-glow {
+  animation: count-up-glow 0.6s ease-out;
+}
